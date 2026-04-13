@@ -2,6 +2,7 @@ package edu.ttap.lootgenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
 
@@ -125,6 +126,44 @@ public class LootGenerator {
         }
     }
 
+    public static Monster pickMonster() {
+        Random r = new Random();
+        return monsters.get(r.nextInt(monsters.size()));
+    }
+
+    public static TreasureClass fetchTreasureClass(Monster monster) {
+        TreasureClass tc = new TreasureClass(monster.getTC(), treasures.get(monster.getTC()));
+        return tc;
+    }
+
+    public static String generateBaseItemH(String tc) {
+        Random r = new Random();
+        String selection = treasures.get(tc)[r.nextInt(3)];
+        if (treasures.containsKey(selection)) {
+            selection = generateBaseItemH(selection);
+        }
+
+        return selection;
+    }
+
+    public static String generateBaseItem(TreasureClass tc) {
+        return generateBaseItemH(tc.getName());
+    }
+
+    public static String generateBaseStats(Armor a) {
+        Random r = new Random();
+        int min = a.getMin();
+        int max = a.getMax();
+
+        int stat = r.nextInt(max - min + 1) + min;
+        return Integer.toString(stat);
+    } 
+
+    public static String generateAffix() {
+        Random r = new Random();
+        
+    }
+
     public static Loot generateLoot() {
         // Pick Monster
         // Get TC
@@ -133,7 +172,8 @@ public class LootGenerator {
         // Get Affixes
         // Create Loot Item
 
-        
+        Monster monster = pickMonster();
+        String item = generateBaseItem(fetchTreasureClass(monster));
     }
 
     public static void main(String[] args) {
