@@ -1,6 +1,6 @@
-# (_TODO: fill in the title of this assignment here!_)
+# Maps Lab & Loot Generator Project
 
-Authors: (_TODO: fill in your names here!_)
+Authors: Cadel Saszik & John Kafumbe
 
 ## Build commands
 
@@ -10,6 +10,6 @@ Authors: (_TODO: fill in your names here!_)
 
 ## Resources
 
-*   (_TODO: fill in resources here!_)
+*   https://www.geeksforgeeks.org/java/java-util-hashmap-in-java-with-examples/
 *   ...
 *   ...
