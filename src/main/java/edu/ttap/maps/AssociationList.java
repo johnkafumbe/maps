@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * An association list is an implementation of a map via a list of key-value pairs.
+ * An association list is an implementation of a map via a list of key-value
+ * pairs.
  */
 public class AssociationList<K, V> implements Map<K, V> {
     public class Pair<T, U> {
@@ -24,7 +25,7 @@ public class AssociationList<K, V> implements Map<K, V> {
     private ArrayList<Pair<K, V>> map;
 
     public AssociationList() {
-        map = null;
+        map = new ArrayList<>();
     }
 
     /**
@@ -32,9 +33,7 @@ public class AssociationList<K, V> implements Map<K, V> {
      */
     @Override
     public void clear() {
-        for (Pair<K, V> pair : map) {
-            map.remove(pair);
-        }
+        map.clear();
     }
 
     /**
@@ -45,8 +44,8 @@ public class AssociationList<K, V> implements Map<K, V> {
     public boolean containsKey(Object key) {
         boolean result = false;
 
-        for (Pair<K,V> pair : map) {
-            if (pair.fst == key) {
+        for (Pair<K, V> pair : map) {
+            if (pair.fst.equals(key)) {
                 result = true;
             }
         }
@@ -62,8 +61,8 @@ public class AssociationList<K, V> implements Map<K, V> {
     public boolean containsValue(Object value) {
         boolean result = false;
 
-        for (Pair<K,V> pair : map) {
-            if (pair.snd == value) {
+        for (Pair<K, V> pair : map) {
+            if (pair.snd.equals(value)) {
                 result = true;
             }
         }
@@ -83,14 +82,14 @@ public class AssociationList<K, V> implements Map<K, V> {
     /**
      * @param key the key whose associated value is to be returned
      * @return the value to which the specified key is mapped, or null if this
-     * map contains no mapping for the key
+     *         map contains no mapping for the key
      */
     @Override
     public V get(Object key) {
         V result = null;
 
         for (Pair<K, V> pair : map) {
-            if (pair.fst == key) {
+            if (pair.fst.equals(key)) {
                 result = pair.snd;
             }
         }
@@ -103,7 +102,7 @@ public class AssociationList<K, V> implements Map<K, V> {
      */
     @Override
     public boolean isEmpty() {
-        return map.size() > 0;
+        return map.size() == 0;
     }
 
     /**
@@ -123,15 +122,16 @@ public class AssociationList<K, V> implements Map<K, V> {
     /**
      * If there is no entry for key in the map, updates the entry to associate key
      * with value. Otherwise, it updates the entry for key accordingly.
-     * @param key the key with which the specified value is to be associated
+     * 
+     * @param key   the key with which the specified value is to be associated
      * @param value the value to be associated with the specified key
      * @return the previous value associated with key, or null if there was no
      *         mapping for key
      */
     @Override
     public V put(K key, V value) {
-        for (Pair<K,V> pair : map) {
-            if (pair.fst == key) {
+        for (Pair<K, V> pair : map) {
+            if (pair.fst.equals(key)) {
                 V snd = pair.snd;
                 pair.snd = value;
 
@@ -144,31 +144,37 @@ public class AssociationList<K, V> implements Map<K, V> {
     }
 
     /**
-     * Copies all of the mappings from the specified map to this map. The effect of this
-     * operation is equivalent to applying the put(K, V) operation to each entry in the
+     * Copies all of the mappings from the specified map to this map. The effect of
+     * this
+     * operation is equivalent to applying the put(K, V) operation to each entry in
+     * the
      * specified map.
+     * 
      * @param m the map whose mappings are to be copied to this map
      */
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         for (K key : m.keySet()) {
-            map.add(new Pair<K,V>(key, m.get(key)));
+            map.add(new Pair<K, V>(key, m.get(key)));
         }
     }
 
     /**
      * Removes the mapping for a key from this map if it is present.
+     * 
      * @param key the key whose mapping is to be removed from the map
-     * @return the previous value associated with key, or null if there was no mapping for
+     * @return the previous value associated with key, or null if there was no
+     *         mapping for
      *         key.
      */
     @Override
     public V remove(Object key) {
         V result = null;
-        for (Pair<K,V> pair : map) {
-            if (pair.fst == key) {
+        for (Pair<K, V> pair : map) {
+            if (pair.fst.equals(key)) {
                 result = pair.snd;
                 map.remove(pair);
+                break;
             }
         }
 
@@ -180,7 +186,7 @@ public class AssociationList<K, V> implements Map<K, V> {
      */
     @Override
     public int size() {
-        return map.size();    
+        return map.size();
     }
 
     /**
@@ -190,7 +196,7 @@ public class AssociationList<K, V> implements Map<K, V> {
     public Collection<V> values() {
         ArrayList<V> result = new ArrayList<>();
 
-        for (Pair<K,V> pair : map) {
+        for (Pair<K, V> pair : map) {
             result.add(pair.snd);
         }
 
