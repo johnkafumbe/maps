@@ -6,16 +6,28 @@ import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
 
+/**
+ * A  loot generation program that reads dataset files and produces
+ * randomized loot drops for monsters.
+ *
+ */
 public class LootGenerator {
     /** The path to the dataset (either the small or large set). */
     private static final String DATA_SET = "data/small";
 
     private static ArrayList<Monster> monsters = new ArrayList<>();
+
     private static HashMap<String, String[]> treasures = new HashMap<>();
+
     private static HashMap<String, String[]> armors = new HashMap<>();
+
     private static ArrayList<String[]> prefixes = new ArrayList<>();
+
     private static ArrayList<String[]> suffixes = new ArrayList<>();
 
+    /**
+     * Read the TreasureClassEx.txt file and populate treasure mappings.
+     */
     public static void scanTCs() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/TreasureClassEx.txt"));
@@ -26,7 +38,6 @@ public class LootGenerator {
                 String name = parts[0];
                 String[] drops = {parts[1], parts[2], parts[3]};
 
-                TreasureClass tc = new TreasureClass(name, drops);
                 treasures.put(name, drops);
             }
 
@@ -37,6 +48,9 @@ public class LootGenerator {
         }
     }
 
+    /**
+     * Read monstats.txt and populate the monsters list.
+     */
     public static void scanMonsters() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/monstats.txt"));
@@ -60,6 +74,9 @@ public class LootGenerator {
         }
     }
 
+    /**
+     * Read armor.txt and populate the armors map.
+     */
     public static void scanArmors() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/armor.txt"));
@@ -82,6 +99,9 @@ public class LootGenerator {
         }
     }
 
+    /**
+     * Read MagicPrefix.txt and populate prefixes.
+     */
     public static void scanPrefixes() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/MagicPrefix.txt"));
@@ -101,6 +121,9 @@ public class LootGenerator {
         }
     }
 
+    /**
+     * Read MagicSuffix.txt and populate suffixes.
+     */
     public static void scanSuffixes() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/MagicSuffix.txt"));
@@ -120,16 +143,34 @@ public class LootGenerator {
         }
     }
 
+    /**
+     * Pick a random monster from the loaded monster list.
+     *
+     * @return a random Monster
+     */
     public static Monster pickMonster() {
         Random r = new Random();
         return monsters.get(r.nextInt(monsters.size()));
     }
 
+    /**
+     * Create a TreasureClass object for the given monster.
+     *
+     * @param monster the monster whose treasure class to fetch
+     * @return the corresponding TreasureClass
+     */
     public static TreasureClass fetchTreasureClass(Monster monster) {
         TreasureClass tc = new TreasureClass(monster.getTC(), treasures.get(monster.getTC()));
         return tc;
     }
 
+    /**
+     * Helper routine that generates a base item name from a treasure class
+     * name, following chained treasure classes if necessary.
+     *
+     * @param tc the treasure class name
+     * @return the generated base item name
+     */
     public static String generateBaseItemH(String tc) {
         Random r = new Random();
         String selection = treasures.get(tc)[r.nextInt(3)];
@@ -140,10 +181,23 @@ public class LootGenerator {
         return selection;
     }
 
+    /**
+     * Generate a base item name for a TreasureClass.
+     *
+     * @param tc the TreasureClass
+     * @return the generated base item name
+     */
     public static String generateBaseItem(TreasureClass tc) {
         return generateBaseItemH(tc.getName());
     }
 
+    /**
+     * Generate an actual base stat (AC) for the provided Armor using its
+     * recorded min/max range.
+     *
+     * @param a the Armor to generate a stat for
+     * @return the generated stat as a string
+     */
     public static String generateBaseStats(Armor a) {
         Random r = new Random();
         String min = a.getMin();
@@ -153,6 +207,12 @@ public class LootGenerator {
         return Integer.toString(stat);
     } 
 
+    /**
+     * Generate up to two random affixes (prefix and suffix). Each is
+     * present with 50% probability.
+     *
+     * @return an Affix[] of length 2 where index 0 is prefix and index 1 is suffix
+     */
     public static Affix[] generateAffixes() {
         Affix[] result = new Affix[2];
         Random r = new Random();
@@ -176,6 +236,12 @@ public class LootGenerator {
         return result;
     }
 
+    /**
+     * Perfoms a full loot generation flow: pick monster, resolve item,
+     * create Armor and affixes, and return a Loot object.
+     *
+     * @return generated Loot
+     */
     public static Loot generateLoot() {
         Monster monster = pickMonster();
 
@@ -192,6 +258,13 @@ public class LootGenerator {
         return result;
     }
 
+    /**
+     * Entry point for running the loot generator as a small interactive
+     * console program. Scans data files then repeatedly generates drops
+     * until the user chooses to stop.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         boolean ingame = true;
         String answer = "";
@@ -220,8 +293,9 @@ public class LootGenerator {
                     System.out.println("Fight again [y/n]?");
 
                     answer = s.next();
-                    if (answer.toLowerCase().equals("n"))
+                    if (answer.toLowerCase().equals("n")) {
                         ingame = false;
+                    }
                 }
             }
             // ========== END GAME LOOP ==========

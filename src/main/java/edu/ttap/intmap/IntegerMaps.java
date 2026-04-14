@@ -39,18 +39,14 @@ public class IntegerMaps {
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-
                 line = line.toLowerCase();
-
                 for (int i = 0; i < line.length(); i++) {
                     char c = line.charAt(i);
-
                     if (c >= 'a' && c <= 'z') {
                         counts[c - 'a']++;
                     }
                 }
             }
-
             scanner.close();
         } catch (Exception e) {
             System.err.println("Error reading file");
@@ -152,8 +148,8 @@ class LetterCounter {
      * @param ch the character to hash
      * @return a valid index into the buckets array
      */
-    private int bucketIndex(char ch){
-        return(int) ch % N_BUCKETS;
+    private int bucketIndex(char ch) {
+        return (int) ch % N_BUCKETS;
     }
 
     /**
@@ -178,7 +174,7 @@ class LetterCounter {
      */
     private Pair findPair(char ch){
         List<Pair> bucket = getBucket(ch);
-        for(Pair p : bucket){
+        for (Pair p : bucket) {
             if (p.key == ch) {
                 return p;
             }
@@ -192,7 +188,7 @@ class LetterCounter {
      * @param ch the character to check
      * @return true if the map contains an entry, false otherwise
      */
-    public boolean hasKey(char ch){
+    public boolean hasKey(char ch) {
         return findPair(ch) != null;
     }
 
@@ -202,7 +198,7 @@ class LetterCounter {
      * @param ch the character key
      * @param v the integer value to store.
      */
-    public void put(char ch, int v){
+    public void put(char ch, int v) {
         Pair existing = findPair(ch);
         if(existing != null){
             existing.value = v;
@@ -218,7 +214,7 @@ class LetterCounter {
      * @return the value associated with ch
      * @throws IllegalArgumentExeception if ch has not entry in this map
      */
-    public int get(char ch){
+    public int get(char ch) {
         Pair p = findPair(ch);
         if(p == null){
             throw new IllegalArgumentException("No valid entry for character");

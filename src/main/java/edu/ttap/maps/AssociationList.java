@@ -11,11 +11,19 @@ import java.util.Set;
  * pairs.
  */
 public class AssociationList<K, V> implements Map<K, V> {
+    /**
+     * Represents a key-value pair for the association list.
+     */
     public class Pair<T, U> {
         private T fst;
-
         private U snd;
 
+        /**
+         * Constructs a Pair with the given first and second values.
+         * 
+         * @param fst the first value
+         * @param snd the second value
+         */
         public Pair(T fst, U snd) {
             this.fst = fst;
             this.snd = snd;
@@ -24,6 +32,9 @@ public class AssociationList<K, V> implements Map<K, V> {
 
     private ArrayList<Pair<K, V>> map;
 
+    /**
+     * Constructs an empty AssociationList.
+     */
     public AssociationList() {
         map = new ArrayList<>();
     }
