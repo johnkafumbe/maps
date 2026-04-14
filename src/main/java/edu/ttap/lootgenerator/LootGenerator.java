@@ -13,20 +13,18 @@ public class LootGenerator {
     private static ArrayList<Monster> monsters = new ArrayList<>();
     private static HashMap<String, String[]> treasures = new HashMap<>();
     private static HashMap<String, String[]> armors = new HashMap<>();
-    private static HashMap<String, String[]> prefixes = new HashMap<>();
-    private static HashMap<String, String[]> suffixes = new HashMap<>();
+    private static ArrayList<String[]> prefixes = new ArrayList<>();
+    private static ArrayList<String[]> suffixes = new ArrayList<>();
 
-    public static void scanTCs(HashMap<String, String[]> treasures) {
+    public static void scanTCs() {
         try {
-            Scanner s = new Scanner(new File(DATA_SET + "/monstats.txt"));
-            s.useDelimiter("\t");
+            Scanner s = new Scanner(new File(DATA_SET + "/TreasureClassEx.txt"));
 
             while (s.hasNextLine()) {
-                String name = s.next();
-                String i1 = s.next();
-                String i2 = s.next();
-                String i3 = s.next();
-                String[] drops = {i1, i2, i3};
+                String line = s.nextLine();
+                String[] parts = line.split("\t");
+                String name = parts[0];
+                String[] drops = {parts[1], parts[2], parts[3]};
 
                 TreasureClass tc = new TreasureClass(name, drops);
                 treasures.put(name, drops);
@@ -39,16 +37,17 @@ public class LootGenerator {
         }
     }
 
-    public static void scanMonsters(ArrayList<Monster> monsters) {
+    public static void scanMonsters() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/monstats.txt"));
-            s.useDelimiter("\t");
 
             while (s.hasNextLine()) {
-                String name = s.next();
-                String type = s.next();
-                int level = s.nextInt();
-                String TC = s.next();
+                String line = s.nextLine();
+                String[] parts = line.split("\t");
+                String name = parts[0];
+                String type = parts[1];
+                int level = Integer.parseInt(parts[2]);
+                String TC = parts[3];
 
                 Monster mon = new Monster(name, type, level, TC);
                 monsters.add(mon);
@@ -61,15 +60,16 @@ public class LootGenerator {
         }
     }
 
-    public static void scanArmors(HashMap<String, String[]> armors) {
+    public static void scanArmors() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/armor.txt"));
-            s.useDelimiter("\t");
 
             while (s.hasNextLine()) {
-                String name = s.next();
-                String minac = s.next();
-                String maxac = s.next();
+                String line = s.nextLine();
+                String[] parts = line.split("\t");
+                String name = parts[0];
+                String minac = parts[1];
+                String maxac = parts[2];
                 String[] range = {minac, maxac};
 
                 armors.put(name, range);
@@ -82,19 +82,16 @@ public class LootGenerator {
         }
     }
 
-    public static void scanPrefixes(HashMap<String, String[]> prefixes) {
+    public static void scanPrefixes() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/MagicPrefix.txt"));
-            s.useDelimiter("\t");
 
             while (s.hasNextLine()) {
-                String name = s.next();
-                String mod = s.next();
-                String minac = s.next();
-                String maxac = s.next();
-                String[] data = {mod, minac, maxac};
+                String line = s.nextLine();
+                String[] parts = line.split("\t");
+                String[] data = {parts[0], parts[1], parts[2], parts[3]};
                 
-                prefixes.put(name, data);
+                prefixes.add(data);
             }
 
             s.close();
@@ -104,19 +101,16 @@ public class LootGenerator {
         }
     }
 
-    public static void scanSuffixes(HashMap<String, String[]> suffixes) {
+    public static void scanSuffixes() {
         try {
             Scanner s = new Scanner(new File(DATA_SET + "/MagicSuffix.txt"));
-            s.useDelimiter("\t");
 
             while (s.hasNextLine()) {
-                String name = s.next();
-                String mod = s.next();
-                String minac = s.next();
-                String maxac = s.next();
-                String[] data = {mod, minac, maxac};
+                String line = s.nextLine();
+                String[] parts = line.split("\t");
+                String[] data = {parts[0], parts[1], parts[2], parts[3]};
                 
-                suffixes.put(name, data);
+                suffixes.add(data);
             }
 
             s.close();
@@ -152,28 +146,50 @@ public class LootGenerator {
 
     public static String generateBaseStats(Armor a) {
         Random r = new Random();
-        int min = a.getMin();
-        int max = a.getMax();
+        String min = a.getMin();
+        String max = a.getMax();
 
-        int stat = r.nextInt(max - min + 1) + min;
+        int stat = r.nextInt(Integer.parseInt(max) - Integer.parseInt(min) + 1) + Integer.parseInt(min);
         return Integer.toString(stat);
     } 
 
-    public static String generateAffix() {
+    public static Affix[] generateAffixes() {
+        Affix[] result = new Affix[2];
         Random r = new Random();
-        
+
+        // affix: (string) {name, mod, min, max}
+
+        // prefix
+        if (r.nextBoolean()) {
+            String[] data = prefixes.get(r.nextInt(prefixes.size()));
+            Prefix prefix = new Prefix(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]));
+            result[0] = prefix;
+        }
+
+        // suffix
+        if (r.nextBoolean()) {
+            String[] data = suffixes.get(r.nextInt(suffixes.size()));
+            Suffix suffix = new Suffix(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]));
+            result[1] = suffix;
+        }
+
+        return result;
     }
 
     public static Loot generateLoot() {
-        // Pick Monster
-        // Get TC
-        // Get Base Item
-        // Get Base Stats
-        // Get Affixes
-        // Create Loot Item
-
         Monster monster = pickMonster();
+
+        System.out.println("Fighting " + monster.getName() + "...");
+        System.out.println("You have slain " + monster.getName() + "!");
+        System.out.println(monster.getName() + " dropped:\n");
+
         String item = generateBaseItem(fetchTreasureClass(monster));
+        Armor armor = new Armor(item, armors.get(item)[0], armors.get(item)[1]);
+        String stat = generateBaseStats(armor);
+        Affix[] affixes = generateAffixes();
+
+        Loot result = new Loot(affixes[0], affixes[1], armor, stat);
+        return result;
     }
 
     public static void main(String[] args) {
@@ -181,11 +197,11 @@ public class LootGenerator {
         String answer = "";
 
         // scan data files
-        scanTCs(treasures);
-        scanMonsters(monsters);
-        scanArmors(armors);
-        scanPrefixes(prefixes);
-        scanSuffixes(suffixes);
+        scanTCs();
+        scanMonsters();
+        scanArmors();
+        scanPrefixes();
+        scanSuffixes();
 
         try {
             Scanner s = new Scanner(System.in);
@@ -193,13 +209,12 @@ public class LootGenerator {
             // ========== START GAME LOOP ==========
             while (ingame) {
                 answer = "";
-                System.out.println("Fighting <monster name>...");
-                System.out.println("You have slain <monster name>!");
-                System.out.println("<monster name> dropped:\n");
 
-                System.out.println("<complete item name>");
-                System.out.println("<base item statistic>");
-                System.out.println("<additional affix statistics>");
+                Loot loot = generateLoot();
+
+                System.out.println(loot.getFullName());
+                System.out.println(loot.getBaseStats());
+                System.out.println(loot.getAffixStats());
 
                 while (!answer.toLowerCase().equals("y") && !answer.toLowerCase().equals("n")) {
                     System.out.println("Fight again [y/n]?");

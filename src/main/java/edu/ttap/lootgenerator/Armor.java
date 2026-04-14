@@ -2,10 +2,10 @@ package edu.ttap.lootgenerator;
 
 public class Armor {
     private String name;
-    private int minac;
-    private int maxac;
+    private String minac;
+    private String maxac;
 
-    Armor(String name, int minac, int maxac) {
+    Armor(String name, String minac, String maxac) {
         this.name = name;
         this.minac = minac;
         this.maxac = maxac;
@@ -15,11 +15,11 @@ public class Armor {
         return name;
     }
     
-    public int getMin() {
+    public String getMin() {
         return minac;
     }
 
-    public int getMax() {
+    public String getMax() {
         return maxac;
     }
 }
