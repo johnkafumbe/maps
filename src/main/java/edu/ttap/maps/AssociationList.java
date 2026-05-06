@@ -16,6 +16,7 @@ public class AssociationList<K, V> implements Map<K, V> {
      */
     public class Pair<T, U> {
         private T fst;
+        
         private U snd;
 
         /**

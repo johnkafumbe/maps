@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.io.File;
 
 /**
- * A  loot generation program that reads dataset files and produces
+ * A loot generation program that reads dataset files and produces
  * randomized loot drops for monsters.
  *
  */
@@ -61,11 +61,11 @@ public class LootGenerator {
                 String name = parts[0];
                 String type = parts[1];
                 int level = Integer.parseInt(parts[2]);
-                String TC = parts[3];
+                String tc = parts[3];
 
-                Monster mon = new Monster(name, type, level, TC);
+                Monster mon = new Monster(name, type, level, tc);
                 monsters.add(mon);
-            } 
+            }
 
             s.close();
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class LootGenerator {
                 String line = s.nextLine();
                 String[] parts = line.split("\t");
                 String[] data = {parts[0], parts[1], parts[2], parts[3]};
-                
+
                 prefixes.add(data);
             }
 
@@ -132,7 +132,7 @@ public class LootGenerator {
                 String line = s.nextLine();
                 String[] parts = line.split("\t");
                 String[] data = {parts[0], parts[1], parts[2], parts[3]};
-                
+
                 suffixes.add(data);
             }
 
@@ -203,9 +203,10 @@ public class LootGenerator {
         String min = a.getMin();
         String max = a.getMax();
 
-        int stat = r.nextInt(Integer.parseInt(max) - Integer.parseInt(min) + 1) + Integer.parseInt(min);
+        int stat = r.nextInt(Integer.parseInt(max) - Integer.parseInt(min) + 1) 
+                   + Integer.parseInt(min);
         return Integer.toString(stat);
-    } 
+    }
 
     /**
      * Generate up to two random affixes (prefix and suffix). Each is
@@ -222,14 +223,18 @@ public class LootGenerator {
         // prefix
         if (r.nextBoolean()) {
             String[] data = prefixes.get(r.nextInt(prefixes.size()));
-            Prefix prefix = new Prefix(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]));
+            Prefix prefix = new Prefix(data[0], data[1], 
+                                       Integer.parseInt(data[2]), 
+                                       Integer.parseInt(data[3]));
             result[0] = prefix;
         }
 
         // suffix
         if (r.nextBoolean()) {
             String[] data = suffixes.get(r.nextInt(suffixes.size()));
-            Suffix suffix = new Suffix(data[0], data[1], Integer.parseInt(data[2]), Integer.parseInt(data[3]));
+            Suffix suffix = new Suffix(data[0], data[1], 
+                                       Integer.parseInt(data[2]), 
+                                       Integer.parseInt(data[3]));
             result[1] = suffix;
         }
 

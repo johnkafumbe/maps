@@ -6,7 +6,6 @@ import java.util.TreeSet;
 import java.util.List;
 import java.util.ArrayList;
 
-
 /**
  * IntegerMaps give three apporoaches to counting characters in txt files
  * 
@@ -14,22 +13,24 @@ import java.util.ArrayList;
  * 
  * 1. Pride and Prejudice by Jane Austen
  * link: https://www.gutenberg.org/cache/epub/1342/pg1342.txt
- * It is consistent with the known frequency of letters because E appears most frequently.
+ * It is consistent with the known frequency of letters because E appears most
+ * frequently.
  * 
  * 2. Moby Dick by Herman Melville
- * link: https://www.gutenberg.org/ebooks/2701 
- * Similary Moby Dick is also consistent with the frequency of letters becuase E appears most frequently.
+ * link: https://www.gutenberg.org/ebooks/2701
+ * Similary Moby Dick is also consistent with the frequency of letters becuase
+ * E appears most frequently.
  * 
  */
 
 public class IntegerMaps {
 
-/**
- * Reads the text file at path and prints the frequency of each of
- * the 26 English letters to standard output, one letter per line.
- * 
- * @param path the path to the text file
- */
+    /**
+     * Reads the text file at path and prints the frequency of each of
+     * the 26 English letters to standard output, one letter per line.
+     * 
+     * @param path the path to the text file
+     */
 
     public static void reportCounts(String path) {
         int[] counts = new int[26];
@@ -59,13 +60,12 @@ public class IntegerMaps {
         }
     }
 
-/**
- * Counts the number of unique characters in the text file at path
- * 
- * @param path the path to the text file
- * @return the number of unique chracters foung in the text file.
- */
-
+    /**
+     * Counts the number of unique characters in the text file at path
+     * 
+     * @param path the path to the text file
+     * @return the number of unique chracters foung in the text file.
+     */
 
     public static int countChars(String path) {
         TreeSet<Character> uniqueCharacters = new TreeSet<>();
@@ -102,6 +102,7 @@ public class IntegerMaps {
 
     /**
      * Run both reportCounts and countChars on first command-line arg
+     * 
      * @param args the path to the tect
      */
     public static void main(String args[]) {
@@ -116,17 +117,18 @@ public class IntegerMaps {
  */
 
 class LetterCounter {
-    private static class Pair{
+    private static class Pair {
         char key;
+
         int value;
 
         /**
          * Contructs a new Pair with the given key and value
          * 
-         * @param key the character key
+         * @param key   the character key
          * @param value the associated integer value
          */
-        Pair(char key, int value){
+        Pair(char key, int value) {
             this.key = key;
             this.value = value;
         }
@@ -137,10 +139,9 @@ class LetterCounter {
     private List<Pair>[] buckets;
 
     @SuppressWarnings("unchecked")
-    public LetterCounter(){
+    public LetterCounter() {
         buckets = new List[N_BUCKETS];
     }
-
 
     /**
      * Maps a chracter to a bucked index in [0, N_BUCKETS]
@@ -154,13 +155,13 @@ class LetterCounter {
 
     /**
      * Returns the bucket list for ch
-     *  
+     * 
      * @param ch the chracters whose bucket is needed
      * @return the list for for ch
      */
-    private List<Pair> getBucket(char ch){
+    private List<Pair> getBucket(char ch) {
         int index = bucketIndex(ch);
-        if(buckets[index] == null){
+        if (buckets[index] == null) {
             buckets[index] = new ArrayList<>();
         }
         return buckets[index];
@@ -172,7 +173,7 @@ class LetterCounter {
      * @param ch the chracter to find
      * @return the matching pair or null if it doesn't exist.
      */
-    private Pair findPair(char ch){
+    private Pair findPair(char ch) {
         List<Pair> bucket = getBucket(ch);
         for (Pair p : bucket) {
             if (p.key == ch) {
@@ -181,7 +182,7 @@ class LetterCounter {
         }
         return null;
     }
-    
+
     /**
      * Returns true if the map contains an entry for ch
      * 
@@ -196,11 +197,11 @@ class LetterCounter {
      * Associates ch with the value v in this map.
      * 
      * @param ch the character key
-     * @param v the integer value to store.
+     * @param v  the integer value to store.
      */
     public void put(char ch, int v) {
         Pair existing = findPair(ch);
-        if(existing != null){
+        if (existing != null) {
             existing.value = v;
         } else {
             getBucket(ch).add(new Pair(ch, v));
@@ -216,7 +217,7 @@ class LetterCounter {
      */
     public int get(char ch) {
         Pair p = findPair(ch);
-        if(p == null){
+        if (p == null) {
             throw new IllegalArgumentException("No valid entry for character");
         }
         return p.value;
